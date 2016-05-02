@@ -6,9 +6,17 @@ This repository contains utilities that support different tasks around MOVE-II's
 ## create\_image.sh
 This tool creates a complete Linux image from the yocto build artifacts (i.e. rootfs, kernel, kernel-modules, ...).
 
-#### Usage:
+### Usage
 ```bash
-./create_image.sh deploy_dir
+./create_image.sh deploy_dir [image_name]
 ```
-Note: _deploy\_dir_ is the path to the yocto image deploy directory, in which the build artifacts are located.
+
+### Options
+* *deploy\_dir*
+
+    The path to the yocto image deploy directory, in which the build artifacts are located.
+
+* *image\_name*
+
+    Name of the image that you built. Defaults to _core-image-cdh_.
 

@@ -25,6 +25,7 @@ IMAGE_FILE="Linux_CDH.img"
 ROOTFS_SIZE_MB="128"
 BOOT_SIZE_MB="16"
 IMAGE_SIZE=$((1+$BOOT_SIZE_MB+$ROOTFS_SIZE_MB))
+IMAGE_NAME="core-image-cdh"
 BOOT_BIN_URL="https://github.com/move-II/cdh-utilities/raw/binaries/BOOT.BIN"
 UBOOT_BIN_URL="https://github.com/move-II/cdh-utilities/raw/binaries/u-boot.bin"
 UBOOT_ENV_URL="https://github.com/move-II/cdh-utilities/raw/binaries/uboot.env"
@@ -34,7 +35,7 @@ TMP_DIR=
 LOOP_DEV=
 
 function print_usage {
-    echo "Usage: $0 deploy_path"
+    echo "Usage: $0 deploy_path [image_name]"
 }
 
 function print_dashline {
@@ -114,7 +115,7 @@ function populate_rootfs {
     echo "Populating rootfs..."
     mount_tmpdir ${LOOP_DEV}p2
     echo "Rootfs partition mounted to $TMP_DIR"
-    tar xfz $DEPLOY_DIR/core-image-minimal-sama5d2-xplained.tar.gz -C $TMP_DIR
+    tar xfz $DEPLOY_DIR/${IMAGE_NAME}-sama5d2-xplained.tar.gz -C $TMP_DIR
     tar xfz $DEPLOY_DIR/modules-sama5d2-xplained.tgz -C $TMP_DIR
     ls -lah $TMP_DIR
     umount_tmpdir
@@ -151,14 +152,18 @@ function cleanup {
 trap cleanup 0
 
 # Check args
-if [ "$#" != "1" ]
+if [ "$#" -lt 1 ] || [ "$#" -gt 2 ]
 then
     echo "ERROR: Wrong number of arguments."
     print_usage
     exit 1
 fi
 DEPLOY_DIR=$1
-echo $DEPLOY_DIR
+
+if [ "$#" == "2" ]
+then
+    IMAGE_NAME=$2
+fi
 
 # Check for root permissions
 if [ "$(whoami)" != "root" ]
