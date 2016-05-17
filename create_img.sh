@@ -24,7 +24,7 @@ set -eu
 IMAGE_FILE=
 ROOTFS_SIZE_MB="128"
 BOOT_SIZE_MB="16"
-IMAGE_SIZE=$((1+$BOOT_SIZE_MB+$ROOTFS_SIZE_MB))
+IMAGE_SIZE=
 IMAGE_NAME="core-image-cdh"
 BOOT_BIN_URL="https://github.com/move-II/cdh-utilities/raw/binaries/BOOT.BIN"
 UBOOT_BIN_URL="https://github.com/move-II/cdh-utilities/raw/binaries/u-boot.bin"
@@ -35,7 +35,35 @@ TMP_DIR=
 LOOP_DEV=
 
 function print_usage {
-    echo "Usage: $0 deploy_path [image_name]"
+    echo "Usage: $0 [options] deploy_path"
+}
+
+function parse_arguments {
+    if [ "$#" -lt 1 ]
+    then
+        echo "${#}ERROR: Wrong number of arguments."
+        print_usage
+        exit 1
+    fi
+    DEPLOY_DIR=$BASH_ARGV
+
+    while getopts :s:i: arg; do
+        case $arg in
+            s)
+                ROOTFS_SIZE_MB="$OPTARG"
+                ;;
+            i)
+                IMAGE_NAME="$OPTARG"
+                ;;
+            \?)
+                echo "ERROR: unknown argument \"${OPTARG}\"!"
+                print_usage
+                exit 1
+                ;;
+        esac
+    done
+    IMAGE_FILE="Linux_${IMAGE_NAME}.img"
+    IMAGE_SIZE="$((1+$BOOT_SIZE_MB+$ROOTFS_SIZE_MB))"
 }
 
 function print_dashline {
@@ -151,21 +179,6 @@ function cleanup {
 
 trap cleanup 0
 
-# Check args
-if [ "$#" -lt 1 ] || [ "$#" -gt 2 ]
-then
-    echo "ERROR: Wrong number of arguments."
-    print_usage
-    exit 1
-fi
-DEPLOY_DIR=$1
-
-if [ "$#" == "2" ]
-then
-    IMAGE_NAME=$2
-fi
-IMAGE_FILE="Linux_${IMAGE_NAME}.img"
-
 # Check for root permissions
 if [ "$(whoami)" != "root" ]
 then
@@ -174,6 +187,7 @@ then
 fi
 
 # Execute main process
+parse_arguments "$@"
 allocate_image_file
 create_partitions
 setup_loopdevice
