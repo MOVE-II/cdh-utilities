@@ -21,7 +21,7 @@
 set -eu
 
 # Define global variables
-IMAGE_FILE="Linux_CDH.img"
+IMAGE_FILE=
 ROOTFS_SIZE_MB="128"
 BOOT_SIZE_MB="16"
 IMAGE_SIZE=$((1+$BOOT_SIZE_MB+$ROOTFS_SIZE_MB))
@@ -164,6 +164,7 @@ if [ "$#" == "2" ]
 then
     IMAGE_NAME=$2
 fi
+IMAGE_FILE="Linux_${IMAGE_NAME}.img"
 
 # Check for root permissions
 if [ "$(whoami)" != "root" ]
