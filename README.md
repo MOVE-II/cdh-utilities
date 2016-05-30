@@ -3,6 +3,11 @@ This repository contains utilities that support different tasks around MOVE-II's
 
 ---
 
+## SPI Parallel Access Test
+Tests for the SPI interface. For more information read the README.md in the spi-parallel-access-test directory.
+
+---
+
 ## create\_image.sh
 This tool creates a complete Linux image from the yocto build artifacts (i.e. rootfs, kernel, kernel-modules, ...).
 
