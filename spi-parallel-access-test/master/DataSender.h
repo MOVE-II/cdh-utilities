@@ -19,13 +19,19 @@
 #define SPI_PARALLEL_ACCESS_TEST_DATASENDER_H
 
 #include <string>
+
 using namespace std;
 
 
 class DataSender {
 private:
     DataSender();
+    int allocateSendDataMemory(uint32_t numBytes);
+    void freeSendDataMemory();
     string spiDeviceName;
+    uint8_t* txBuffer;
+    struct spi_ioc_transfer* xfer;
+    static const constexpr uint32_t maxBytesPerTransfer = 64;
 public:
     DataSender(string spiDevName);
     void sendData(uint32_t numBytes);

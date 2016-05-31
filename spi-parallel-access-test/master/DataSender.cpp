@@ -23,7 +23,47 @@
 #include "DataSender.h"
 
 DataSender::DataSender(string spiDevName) {
+    xfer = nullptr;
+    txBuffer = nullptr;
     spiDeviceName = spiDevName;
+}
+
+/**
+ * Allocate memory necessary for the call to the sendData method
+ *
+ * returns number of elements in the xfer array
+ */
+int DataSender::allocateSendDataMemory(uint32_t numBytes) {
+    int numTransfers = (numBytes + maxBytesPerTransfer - 1) / maxBytesPerTransfer;
+    xfer = (struct spi_ioc_transfer*) malloc(numTransfers * sizeof(struct spi_ioc_transfer));
+    size_t bufferSize = 0;
+    if(numTransfers == 1) {
+        bufferSize = numBytes * sizeof(uint8_t);
+        txBuffer = (uint8_t*) malloc(bufferSize);
+    } else {
+        bufferSize = maxBytesPerTransfer * sizeof(uint8_t);
+        txBuffer = (uint8_t*) malloc(bufferSize);
+    }
+    memset(txBuffer, 0xDE, bufferSize);
+    memset(xfer, 0, sizeof(xfer));
+    for(int i = 0; i < numTransfers; i++) {
+        xfer[i].len = maxBytesPerTransfer;
+        xfer[i].tx_buf = (unsigned long) txBuffer;
+        xfer[i].bits_per_word = 8;
+        xfer[i].cs_change = 0;
+    }
+    xfer[numTransfers-1].len = numBytes % maxBytesPerTransfer;
+    return numTransfers;
+}
+
+/**
+ * Free memory allocated in the allocateSendDataMemory method
+ */
+void DataSender::freeSendDataMemory() {
+    delete xfer;
+    xfer = nullptr;
+    delete txBuffer;
+    txBuffer = nullptr;
 }
 
 /**
@@ -39,19 +79,12 @@ void DataSender::sendData(uint32_t numBytes) {
         throw error;
     }
 
-    struct spi_ioc_transfer xfer;
-    memset(&xfer, 0, sizeof(xfer));
-    uint8_t* buf;
-    buf = (uint8_t*) malloc(sizeof(uint8_t)*numBytes);
-    memset(buf, 0xDE, numBytes);
-    xfer.tx_buf = (unsigned long) buf;
-    xfer.bits_per_word = 8;
-    xfer.len = numBytes;
-
-    int success = ioctl(fileDescriptor, SPI_IOC_MESSAGE(1), &xfer);
-    delete(buf);
+    int numTransfers = allocateSendDataMemory(numBytes);
+    int success = ioctl(fileDescriptor, SPI_IOC_MESSAGE(numTransfers), xfer);
+    freeSendDataMemory();
     if(success < 0) {
         string error = "SPI data transfer could not be completed!";
+        cerr << "IOCTL return code: " << success << endl;
         throw error;
     }
 }
