@@ -14,3 +14,17 @@ The test suite consists of two test applications:
    This test binary has to be run on an additional platform with the slave selects of the SPI master attached to GPIO pins.
    It will validate whether the slave selects are activated as expected.
 
+## SPI\_pat\_master
+
+### Usage
+```bash
+SPI_pat_master spi_device num_bytes
+```
+
+* *spi_device*
+
+    Path to the spi device file to send the data to.
+
+* *num_bytes*
+
+    Amount of bytes to send to the spi device.
