@@ -16,10 +16,30 @@
  **/
 
 #include <iostream>
+#include "DataSender.h"
 
 using namespace std;
 
-int main() {
-    cout << "Hello, World!" << endl;
+int main(int argc, char* argv[]) {
+    uint32_t numBytes = 0;
+    string spiDevice;
+    if(argc != 3) {
+        cerr << "Wrong number of arguments!" << endl;
+        cout << "Usage: " << argv[0] << " spi_device num_bytes" << endl;
+        return 1;
+    }
+    spiDevice = argv[1];
+    numBytes = (uint32_t) atol(argv[2]);
+    if(numBytes > 4096) {
+        cerr << "Maximum size for an SPI data transfer is 4096 bytes!" << endl;
+        return 1;
+    }
+    DataSender dataSender(spiDevice);
+    try {
+        dataSender.sendData(numBytes);
+    } catch (string error) {
+        cerr << "ERROR in sendData: " << error << endl;
+    }
+
     return 0;
 }
