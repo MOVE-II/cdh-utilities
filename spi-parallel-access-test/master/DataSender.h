@@ -28,7 +28,7 @@ private:
     string spiDeviceName;
 public:
     DataSender(string spiDevName);
-    void sendData(int numBytes);
+    void sendData(uint32_t numBytes);
     ~DataSender();
 };
 

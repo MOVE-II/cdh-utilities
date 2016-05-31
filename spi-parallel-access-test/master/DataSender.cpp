@@ -16,7 +16,10 @@
  **/
 
 #include <fcntl.h>
+#include <string.h>
 #include <iostream>
+#include <sys/ioctl.h>
+#include <linux/spi/spidev.h>
 #include "DataSender.h"
 
 DataSender::DataSender(string spiDevName) {
@@ -29,13 +32,28 @@ DataSender::DataSender(string spiDevName) {
  *
  * numBytes: Number of bytes to send
  */
-void DataSender::sendData(int numBytes) {
+void DataSender::sendData(uint32_t numBytes) {
     int fileDescriptor = open(spiDeviceName.c_str(), O_RDWR);
     if(fileDescriptor<0) {
         string error = "Device " + spiDeviceName + " could not be accessed!";
         throw error;
     }
-    //TODO: Continue with setting spi mode with ioctl
+
+    struct spi_ioc_transfer xfer;
+    memset(&xfer, 0, sizeof(xfer));
+    uint8_t* buf;
+    buf = (uint8_t*) malloc(sizeof(uint8_t)*numBytes);
+    memset(buf, 0xDE, numBytes);
+    xfer.tx_buf = (unsigned long) buf;
+    xfer.bits_per_word = 8;
+    xfer.len = numBytes;
+
+    int success = ioctl(fileDescriptor, SPI_IOC_MESSAGE(1), &xfer);
+    delete(buf);
+    if(success < 0) {
+        string error = "SPI data transfer could not be completed!";
+        throw error;
+    }
 }
 
 DataSender::~DataSender() {
