@@ -45,7 +45,7 @@ int DataSender::allocateSendDataMemory(uint32_t numBytes) {
         txBuffer = (uint8_t*) malloc(bufferSize);
     }
     memset(txBuffer, 0xDE, bufferSize);
-    memset(xfer, 0, sizeof(xfer));
+    memset(xfer, 0, sizeof(*xfer) * numTransfers);
     for(int i = 0; i < numTransfers; i++) {
         xfer[i].len = maxBytesPerTransfer;
         xfer[i].tx_buf = (unsigned long) txBuffer;
