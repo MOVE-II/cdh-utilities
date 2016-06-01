@@ -15,11 +15,37 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
+#include <string>
 #include <iostream>
+#include "GpioReader.h"
 
 using namespace std;
 
-int main() {
-    cout << "Hello, World!" << endl;
+int main(int argc, char* argv[]) {
+    if(argc != 2) {
+        cerr << "ERROR: Wrong number of arguments!" << endl;
+        cout << "Usage: " << argv[0] << " gpio_pin_id" << endl;
+        return 1;
+    }
+    cout << "Reading value for GPIO pin " << argv[1] << endl;
+    string pindId = string(argv[1]);
+    GpioReader* gpioReader = nullptr;
+    try {
+        gpioReader = new GpioReader(pindId);
+    } catch (string error) {
+        cerr << "ERROR: " << error << endl;
+        return 1;
+    }
+
+    int value;
+    while(true) {
+        try {
+            value = gpioReader->getPinStatus();
+            cout << "\rValue: " << value << flush;
+        } catch (string error) {
+            cerr << "ERROR: " << error << endl;
+            return 1;
+        }
+    }
     return 0;
 }
