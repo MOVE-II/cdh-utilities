@@ -34,7 +34,7 @@ private:
     static const constexpr uint32_t maxBytesPerTransfer = 64;
 public:
     DataSender(string spiDevName);
-    void sendData(uint32_t numBytes);
+    void sendData(uint32_t numBytes, int repetitions = 1);
     ~DataSender();
 };
 

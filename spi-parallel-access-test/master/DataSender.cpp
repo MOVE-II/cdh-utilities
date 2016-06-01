@@ -71,16 +71,21 @@ void DataSender::freeSendDataMemory() {
  * In case something bad happens, an exception with the error message as string is thrown
  *
  * numBytes: Number of bytes to send
+ * repetitions: How often to send the data
  */
-void DataSender::sendData(uint32_t numBytes) {
+void DataSender::sendData(uint32_t numBytes, int repetitions) {
     int fileDescriptor = open(spiDeviceName.c_str(), O_RDWR);
     if(fileDescriptor<0) {
         string error = "Device " + spiDeviceName + " could not be accessed!";
         throw error;
     }
-
     int numTransfers = allocateSendDataMemory(numBytes);
-    int success = ioctl(fileDescriptor, SPI_IOC_MESSAGE(numTransfers), xfer);
+    int success = 0;
+    for(int i = 0; i < repetitions; i++) {
+        success = ioctl(fileDescriptor, SPI_IOC_MESSAGE(numTransfers), xfer);
+        if(success < 0)
+            break;
+    }
     freeSendDataMemory();
     if(success < 0) {
         string error = "SPI data transfer could not be completed!";

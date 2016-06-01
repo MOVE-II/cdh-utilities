@@ -21,22 +21,24 @@
 using namespace std;
 
 int main(int argc, char* argv[]) {
-    uint32_t numBytes = 0;
-    string spiDevice;
-    if(argc != 3) {
+    if(argc != 3 && argc != 4) {
         cerr << "Wrong number of arguments!" << endl;
-        cout << "Usage: " << argv[0] << " spi_device num_bytes" << endl;
+        cout << "Usage: " << argv[0] << " spi_device num_bytes [repetitions]" << endl;
         return 1;
     }
-    spiDevice = argv[1];
-    numBytes = (uint32_t) atol(argv[2]);
+    string spiDevice = argv[1];
+    uint32_t numBytes = (uint32_t) atol(argv[2]);
     if(numBytes > 4096) {
         cerr << "Maximum size for an SPI data transfer is 4096 bytes!" << endl;
         return 1;
     }
+    int repetitions = 1;
+    if(argc == 4) {
+        repetitions = atoi(argv[3]);
+    }
     DataSender dataSender(spiDevice);
     try {
-        dataSender.sendData(numBytes);
+        dataSender.sendData(numBytes, repetitions);
     } catch (string error) {
         cerr << "ERROR in sendData: " << error << endl;
     }
