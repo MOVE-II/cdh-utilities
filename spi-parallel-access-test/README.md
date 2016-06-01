@@ -18,7 +18,7 @@ The test suite consists of two test applications:
 
 ### Usage
 ```bash
-SPI_pat_master spi_device num_bytes
+SPI_pat_master spi_device num_bytes [repetitions]
 ```
 
 * *spi_device*
@@ -28,3 +28,8 @@ SPI_pat_master spi_device num_bytes
 * *num_bytes*
 
     Amount of bytes to send to the spi device.
+
+* *repetitions*
+
+    Repeatedly send the data for the specified amount of times.
+    Defaults to one.
