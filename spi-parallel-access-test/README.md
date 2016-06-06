@@ -33,3 +33,19 @@ SPI_pat_master spi_device num_bytes [repetitions]
 
     Repeatedly send the data for the specified amount of times.
     Defaults to one.
+
+## SPI\_pat\_slave-mock
+
+### Usage
+```bash
+SPI_pat_slave-mock gpio_pin_id
+```
+
+Sending signal 1 (SIGHUP) to the process, causes it to printing the current state to stdout. Can be done with
+```bash
+kill -1 [SPI_pat_slave-mock pid]
+```
+
+* *gpio_pin_id*
+
+    ID of the GPIO pin, under which it can be found under /sys/class/gpio/[gpio_pin_id].
