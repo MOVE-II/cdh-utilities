@@ -61,3 +61,7 @@ int GpioReader::getPinStatus() {
     }
     return value - '0';
 }
+
+string GpioReader::getPinId() {
+    return pinId;
+}

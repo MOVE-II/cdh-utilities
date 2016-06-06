@@ -15,26 +15,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef SPI_PARALLEL_ACCESS_TEST_GPIOREADER_H
-#define SPI_PARALLEL_ACCESS_TEST_GPIOREADER_H
+#ifndef SPI_PARALLEL_ACCESS_TEST_STATECHANGECOUNTER_H
+#define SPI_PARALLEL_ACCESS_TEST_STATECHANGECOUNTER_H
 
-#include <string>
+#include <vector>
+#include "GpioReader.h"
 
 using namespace std;
 
-class GpioReader {
+class StateChangeCounter {
 private:
-    GpioReader();
-    void initializeGpioPin();
-    void throwStringException(string error);
-    string pinId;
-    int fileDescriptor;
+    StateChangeCounter();
+    bool doCount;
+    const int numPins;
+    long* stateChanged;
+    vector<GpioReader*>& pinReaders;
 public:
-    GpioReader(string pinId);
-    int getPinStatus();
-    string getPinId();
-    ~GpioReader();
+    StateChangeCounter(vector<GpioReader*>& pinReaderList);
+    void printState();
+    void stopCounting();
+    void countStateChanges();
+
 };
 
 
-#endif //SPI_PARALLEL_ACCESS_TEST_GPIOREADER_H
+#endif //SPI_PARALLEL_ACCESS_TEST_STATECHANGECOUNTER_H

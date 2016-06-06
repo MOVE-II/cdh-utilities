@@ -16,10 +16,19 @@
  **/
 
 #include <string>
+#include <vector>
+#include <csignal>
 #include <iostream>
 #include "GpioReader.h"
+#include "StateChangeCounter.h"
 
 using namespace std;
+
+StateChangeCounter* stateChangeCounter;
+
+void handleSignal(int signalID) {
+    stateChangeCounter->printState();
+}
 
 int main(int argc, char* argv[]) {
     if(argc != 2) {
@@ -37,15 +46,10 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    int value;
-    while(true) {
-        try {
-            value = gpioReader->getPinStatus();
-            cout << "\rValue: " << value << flush;
-        } catch (string error) {
-            cerr << "ERROR: " << error << endl;
-            return 1;
-        }
-    }
+    signal(SIGHUP, handleSignal);
+    vector<GpioReader*> gpioReaders;
+    gpioReaders.push_back(gpioReader);
+    stateChangeCounter = new StateChangeCounter(gpioReaders);
+    stateChangeCounter->countStateChanges();
     return 0;
 }
