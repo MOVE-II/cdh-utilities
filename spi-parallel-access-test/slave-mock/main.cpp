@@ -20,6 +20,7 @@
 #include <csignal>
 #include <iostream>
 #include "GpioReader.h"
+#include "PrioritySwitcher.h"
 #include "StateChangeCounter.h"
 
 using namespace std;
@@ -45,6 +46,9 @@ int main(int argc, char* argv[]) {
         cerr << "ERROR: " << error << endl;
         return 1;
     }
+
+    PrioritySwitcher prioritySwitcher(false);
+    prioritySwitcher.switchToRealtimePriority();
 
     signal(SIGHUP, handleSignal);
     vector<GpioReader*> gpioReaders;
