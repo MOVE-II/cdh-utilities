@@ -27,11 +27,14 @@ private:
     GpioReader();
     void initializeGpioPin();
     void throwStringException(string error);
+    void adaptGpioSettings(string settingId, string value);
     string pinId;
+    string gpioPath;
     int fileDescriptor;
 public:
     GpioReader(string pinId);
     int getPinStatus();
+    int getFileDescriptor();
     string getPinId();
     ~GpioReader();
 };

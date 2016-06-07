@@ -15,6 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
+#include <poll.h>
 #include <cstring>
 #include <iostream>
 #include "StateChangeCounter.h"
@@ -30,16 +31,24 @@ StateChangeCounter::StateChangeCounter(vector<GpioReader*>& pinReaders) :
 void StateChangeCounter::countStateChanges() {
     doCount = true;
     int lastState[numPins];
+    struct pollfd fdset[numPins];
+    memset((void*) fdset, 0, sizeof(fdset));
     for(int i = 0; i < numPins; i++) {
         lastState[i] = 1;
+        fdset[i].fd = pinReaders.at(i)->getFileDescriptor();
+        fdset[i].events = POLLPRI;
     }
     while(doCount) {
+        poll(fdset, numPins, 10*1000);
         for(int i = 0; i < numPins; i++) {
-            int currState = pinReaders.at(i)->getPinStatus();
-            if(lastState[i] == 1 &&  currState == 0) {
-                stateChanged[i]++;
+            if(fdset[i].revents & POLLPRI) {
+                int currState = pinReaders.at(i)->getPinStatus();
+                if(lastState[i] == 1 &&  currState == 0) {
+                    stateChanged[i]++;
+                }
+                lastState[i] = currState;
             }
-            lastState[i] = currState;
+            fdset[i].revents = 0;
         }
     }
 }

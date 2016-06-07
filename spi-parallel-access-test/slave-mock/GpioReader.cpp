@@ -23,6 +23,7 @@
 GpioReader::GpioReader(string pinId) {
     this->pinId = pinId;
     fileDescriptor = -1;
+    gpioPath = "/sys/class/gpio/" + pinId + "/";
     initializeGpioPin();
 }
 
@@ -31,17 +32,9 @@ void GpioReader::throwStringException(string error) {
 }
 
 void GpioReader::initializeGpioPin() {
-    string gpioPath = "/sys/class/gpio/" + pinId + "/";
-    int fd = open((gpioPath + "direction").c_str(), O_WRONLY);
-    if(fd < 0) {
-        throwStringException("Unable to open the direction file in " + gpioPath);
-    }
-    ssize_t ret = write(fd, "in", 2);
-    if(ret < 1) {
-        throwStringException("Unable to write to direction file in " + gpioPath);
-    }
-    close(fd);
-    fileDescriptor = open((gpioPath + "value").c_str(), O_RDONLY);
+    adaptGpioSettings("direction", "in");
+    adaptGpioSettings("edge", "both");
+    fileDescriptor = open((gpioPath + "value").c_str(), O_RDONLY|O_NONBLOCK);
     if(fileDescriptor < 0) {
         throwStringException("Unable to open the value file in " + gpioPath);
     }
@@ -62,6 +55,23 @@ int GpioReader::getPinStatus() {
     return value - '0';
 }
 
+void GpioReader::adaptGpioSettings(string settingId, string value) {
+    string pathToOpen = gpioPath + settingId;
+    int fd = open(pathToOpen.c_str(), O_WRONLY);
+    if(fd < 0) {
+        throwStringException("Unable to open the following gpio file: " + pathToOpen);
+    }
+    ssize_t ret = write(fd, value.c_str(), value.size());
+    if(ret < 1) {
+        throwStringException("Unable to write to the following gpio file: " + pathToOpen);
+    }
+    close(fd);
+}
+
 string GpioReader::getPinId() {
     return pinId;
+}
+
+int GpioReader::getFileDescriptor() {
+    return fileDescriptor;
 }
