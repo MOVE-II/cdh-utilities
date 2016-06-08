@@ -38,17 +38,25 @@ void StateChangeCounter::countStateChanges() {
         fdset[i].fd = pinReaders.at(i)->getFileDescriptor();
         fdset[i].events = POLLPRI;
     }
+    int currState[numPins];
+    memset(currState, 0, sizeof(currState));
+    int concurrentlyActiveCounter = 0;
     while(doCount) {
         poll(fdset, numPins, 10*1000);
+        int activeSlaves = 0;
         for(int i = 0; i < numPins; i++) {
-            if(fdset[i].revents & POLLPRI) {
-                int currState = pinReaders.at(i)->getPinStatus();
-                if(lastState[i] == 1 &&  currState == 0) {
-                    stateChanged[i]++;
-                }
-                lastState[i] = currState;
+            currState[i] = pinReaders.at(i)->getPinStatus();
+            if(lastState[i] == 1 &&  currState[i] == 0) {
+                stateChanged[i]++;
             }
+            if(currState[i] == 0)
+                activeSlaves++;
+            lastState[i] = currState[i];
             fdset[i].revents = 0;
+        }
+        if(activeSlaves > 1) {
+            concurrentlyActiveCounter++;
+            cerr << "More than one CS active at the same time!" << endl;
         }
     }
 }
