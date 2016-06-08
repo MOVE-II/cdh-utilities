@@ -32,28 +32,29 @@ void handleSignal(int signalID) {
 }
 
 int main(int argc, char* argv[]) {
-    if(argc != 2) {
+    if(argc < 2) {
         cerr << "ERROR: Wrong number of arguments!" << endl;
-        cout << "Usage: " << argv[0] << " gpio_pin_id" << endl;
+        cout << "Usage: " << argv[0] << " gpio_pin_id.." << endl;
         return 1;
     }
-    cout << "Reading value for GPIO pin " << argv[1] << endl;
-    string pindId = string(argv[1]);
-    GpioReader* gpioReader = nullptr;
-    try {
-        gpioReader = new GpioReader(pindId);
-    } catch (string error) {
-        cerr << "ERROR: " << error << endl;
-        return 1;
+    const int numPins = argc-1;
+    GpioReader* gpioReaders[numPins];
+    vector<GpioReader*> gpioReaderVector;
+    for(int i = 0; i < numPins; i++) {
+        try {
+            gpioReaders[i] = new GpioReader(argv[i+1]);
+        } catch (string error) {
+            cerr << "ERROR: " << error << endl;
+            return 1;
+        }
+        gpioReaderVector.push_back(gpioReaders[i]);
     }
 
     PrioritySwitcher prioritySwitcher(false);
     prioritySwitcher.switchToRealtimePriority();
 
     signal(SIGHUP, handleSignal);
-    vector<GpioReader*> gpioReaders;
-    gpioReaders.push_back(gpioReader);
-    stateChangeCounter = new StateChangeCounter(gpioReaders);
+    stateChangeCounter = new StateChangeCounter(gpioReaderVector);
     stateChangeCounter->countStateChanges();
     return 0;
 }
