@@ -18,12 +18,8 @@ The test suite consists of two test applications:
 
 ### Usage
 ```bash
-SPI_pat_master spi_device num_bytes [repetitions]
+SPI_pat_master num_bytes repetitions num_threads spi_deviceX..
 ```
-
-* *spi_device*
-
-    Path to the spi device file to send the data to.
 
 * *num_bytes*
 
@@ -32,7 +28,14 @@ SPI_pat_master spi_device num_bytes [repetitions]
 * *repetitions*
 
     Repeatedly send the data for the specified amount of times.
-    Defaults to one.
+
+* *num_threads*
+
+    Amount of threads that shall send data to spi devices. All threads send the same amount of data (i.e. same number of bytes per packet and same amount of repetitions).
+
+* *spi_deviceX..*
+
+    Path to the spi device files to send the data to. The paths to *num_threads* spi devices have to be specified.
 
 ## SPI\_pat\_slave-mock
 
