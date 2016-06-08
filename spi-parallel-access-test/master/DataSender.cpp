@@ -51,6 +51,7 @@ int DataSender::allocateSendDataMemory(uint32_t numBytes) {
         xfer[i].tx_buf = (unsigned long) txBuffer;
         xfer[i].bits_per_word = 8;
         xfer[i].cs_change = 0;
+        xfer[i].speed_hz = 325500;
     }
     xfer[numTransfers-1].len = numBytes % maxBytesPerTransfer;
     return numTransfers;
