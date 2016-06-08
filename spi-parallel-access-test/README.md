@@ -41,7 +41,7 @@ SPI_pat_master num_bytes repetitions num_threads spi_deviceX..
 
 ### Usage
 ```bash
-SPI_pat_slave-mock gpio_pin_id
+SPI_pat_slave-mock gpio_pin_id..
 ```
 
 Sending signal 1 (SIGHUP) to the process, causes it to printing the current state to stdout. Can be done with
@@ -49,6 +49,7 @@ Sending signal 1 (SIGHUP) to the process, causes it to printing the current stat
 kill -1 [SPI_pat_slave-mock pid]
 ```
 
-* *gpio_pin_id*
+* *gpio_pin_id..*
 
-    ID of the GPIO pin, under which it can be found under /sys/class/gpio/[gpio_pin_id].
+    IDs of the GPIO pins to watch, under which they can be found under /sys/class/gpio/[gpio_pin_id].
+    NOTE: The gpio pins have to be exported before by writing their corresponding number id to /sys/class/gpio/export .
