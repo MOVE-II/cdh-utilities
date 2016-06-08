@@ -15,28 +15,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef SPI_PARALLEL_ACCESS_TEST_DATASENDER_H
-#define SPI_PARALLEL_ACCESS_TEST_DATASENDER_H
+#ifndef SPI_PARALLEL_ACCESS_TEST_DATASENDERTHREAD_H
+#define SPI_PARALLEL_ACCESS_TEST_DATASENDERTHREAD_H
 
-#include <string>
+#include <thread>
+#include "DataSender.h"
 
 using namespace std;
 
-
-class DataSender {
+class DataSenderThread {
 private:
-    DataSender();
-    int allocateSendDataMemory(uint32_t numBytes);
-    void freeSendDataMemory();
-    string spiDeviceName;
-    uint8_t* txBuffer;
-    struct spi_ioc_transfer* xfer;
-    static const constexpr int maxBytesPerTransfer = 64;
+    DataSenderThread();
+    static void* run(DataSender* dataSender, int numBytes, int numRepetitions);
+    int numBytes;
+    int numRepetitions;
+    thread* senderThread;
+    DataSender& dataSender;
 public:
-    DataSender(string spiDevName);
-    void sendData(int numBytes, int repetitions = 1);
-    ~DataSender();
+    DataSenderThread(DataSender& dataSender, int numBytes, int numRepetitions);
+    void startThread();
+    void join();
 };
 
 
-#endif //SPI_PARALLEL_ACCESS_TEST_DATASENDER_H
+#endif //SPI_PARALLEL_ACCESS_TEST_DATASENDERTHREAD_H

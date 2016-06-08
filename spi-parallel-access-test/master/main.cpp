@@ -17,31 +17,45 @@
 
 #include <iostream>
 #include "DataSender.h"
+#include "DataSenderThread.h"
 
 using namespace std;
 
+void printUsage(char* argv[]) {
+    cout << "Usage: " << argv[0] << " num_bytes repetitions num_threads spi_deviceX.." << endl;
+}
+
 int main(int argc, char* argv[]) {
-    if(argc != 3 && argc != 4) {
+    if(argc < 5) {
         cerr << "Wrong number of arguments!" << endl;
-        cout << "Usage: " << argv[0] << " spi_device num_bytes [repetitions]" << endl;
+        printUsage(argv);
         return 1;
     }
-    string spiDevice = argv[1];
-    uint32_t numBytes = (uint32_t) atol(argv[2]);
+    int numBytes = atoi(argv[1]);
     if(numBytes > 4096) {
         cerr << "Maximum size for an SPI data transfer is 4096 bytes!" << endl;
         return 1;
     }
-    int repetitions = 1;
-    if(argc == 4) {
-        repetitions = atoi(argv[3]);
+    int repetitions = atoi(argv[2]);
+    const int numThreads = atoi(argv[3]);
+    if(argc != (numThreads+4)) {
+        cerr << "An SPI device is needed for each executing thread!" << endl;
+        printUsage(argv);
+        return 1;
     }
-    DataSender dataSender(spiDevice);
-    try {
-        dataSender.sendData(numBytes, repetitions);
-    } catch (string error) {
-        cerr << "ERROR in sendData: " << error << endl;
+    DataSender* dataSender[numThreads];
+    DataSenderThread* dataSenderThread[numThreads];
+    for(int i = 0; i < numThreads; i++) {
+        dataSender[i] = new DataSender(string(argv[4+i]));
+        dataSenderThread[i] = new DataSenderThread(*dataSender[i], numBytes, repetitions);
     }
-
+    for(int i = 0; i < numThreads; i++) {
+        dataSenderThread[i]->startThread();
+    }
+    cout << numThreads << " threads started successfully." << endl;
+    for(int i = 0; i < numThreads; i++) {
+        dataSenderThread[i]->join();
+        cout << "Thread " << i << " completed." << endl;
+    }
     return 0;
 }

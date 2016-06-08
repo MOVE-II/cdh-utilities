@@ -74,7 +74,7 @@ void DataSender::freeSendDataMemory() {
  * numBytes: Number of bytes to send
  * repetitions: How often to send the data
  */
-void DataSender::sendData(uint32_t numBytes, int repetitions) {
+void DataSender::sendData(int numBytes, int repetitions) {
     int fileDescriptor = open(spiDeviceName.c_str(), O_RDWR);
     if(fileDescriptor<0) {
         string error = "Device " + spiDeviceName + " could not be accessed!";
