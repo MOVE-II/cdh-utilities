@@ -28,12 +28,13 @@ private:
     DataSender();
     int allocateSendDataMemory(uint32_t numBytes);
     void freeSendDataMemory();
+    int csChange;
     string spiDeviceName;
     uint8_t* txBuffer;
     struct spi_ioc_transfer* xfer;
     static const constexpr int maxBytesPerTransfer = 64;
 public:
-    DataSender(string spiDevName);
+    DataSender(string spiDevName, int csChange);
     void sendData(int numBytes, int repetitions = 1);
     ~DataSender();
 };

@@ -22,9 +22,10 @@
 #include <linux/spi/spidev.h>
 #include "DataSender.h"
 
-DataSender::DataSender(string spiDevName) {
+DataSender::DataSender(string spiDevName, int csChange) {
     xfer = nullptr;
     txBuffer = nullptr;
+    this->csChange = csChange;
     spiDeviceName = spiDevName;
 }
 
@@ -50,7 +51,7 @@ int DataSender::allocateSendDataMemory(uint32_t numBytes) {
         xfer[i].len = maxBytesPerTransfer;
         xfer[i].tx_buf = (unsigned long) txBuffer;
         xfer[i].bits_per_word = 8;
-        xfer[i].cs_change = 0;
+        xfer[i].cs_change = (__u8) csChange;
         xfer[i].speed_hz = 325500;
     }
     xfer[numTransfers-1].len = numBytes % maxBytesPerTransfer;

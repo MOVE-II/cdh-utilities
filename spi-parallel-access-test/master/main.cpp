@@ -45,9 +45,11 @@ int main(int argc, char* argv[]) {
     }
     DataSender* dataSender[numThreads];
     DataSenderThread* dataSenderThread[numThreads];
+    int csChange = 1;
     for(int i = 0; i < numThreads; i++) {
-        dataSender[i] = new DataSender(string(argv[4+i]));
+        dataSender[i] = new DataSender(string(argv[4+i]), csChange);
         dataSenderThread[i] = new DataSenderThread(*dataSender[i], numBytes, repetitions);
+        csChange = 0;
     }
     for(int i = 0; i < numThreads; i++) {
         dataSenderThread[i]->startThread();
