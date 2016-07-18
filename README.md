@@ -8,6 +8,12 @@ Tests for the SPI interface. For more information read the README.md in the spi-
 
 ---
 
+## moveio
+
+Contains a C++ Wrapper Library for IO functions (SPI, GPIO, PinMapper). For more information read the README.md in the moveio directory.
+
+---
+
 ## create\_image.sh
 This tool creates a complete Linux image from the yocto build artifacts (i.e. rootfs, kernel, kernel-modules, ...).
 
@@ -28,4 +34,3 @@ This tool creates a complete Linux image from the yocto build artifacts (i.e. ro
 * *-s rootfs_size*
 
     Size of the rootfs partition in megabytes. Defaults to _128_.
-
