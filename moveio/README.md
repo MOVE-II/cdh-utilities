@@ -21,6 +21,11 @@ gpio54 54
 <gpio name as in sysfs> <gpio id for export>
 ```
 
+PinMapper files:
+* For [BeagleBone Black](mappings/beaglebone_mapping.cfg)
+* For Atmel Devboard: -
+* For Hyperion Devboard: -
+
 ### moveio/SPIDevice.h
 
 Creating an SPIDevice works by providing the device path, and the used SPI mode.
