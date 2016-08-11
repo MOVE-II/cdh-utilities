@@ -96,7 +96,7 @@ void SPIDevice::close()
 		this->custom_cs = nullptr;
 	}
 	
-	if (this->fd > 0)
+	if (this->fd >= 0)
 	{
 		::close(this->fd);
 		this->fd = -1;
