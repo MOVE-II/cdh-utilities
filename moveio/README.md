@@ -4,7 +4,7 @@ Contains a C++ Wrapper Library for IO functions (SPI, GPIO, PinMapper).
 
 ## Usage
 
-When the library is installed, it can be used during build by specifying "-lmoveio" or by using "target_link_libraries" directive in cmake (see moveio/test/CMakeLists.txt).
+When the library is installed, it can be used during build by specifying "-lmoveio" or by using "target_link_libraries" directive in cmake (see [CMakeLists.txt](moveio/test/CMakeLists.txt) for the test programs).
 
 All path and device names used in the code should be collected in a single header file, so that changing them is easy when switching from BeagleBone to final CDH.
 
