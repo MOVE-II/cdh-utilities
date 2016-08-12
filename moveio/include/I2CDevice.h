@@ -21,36 +21,41 @@ public:
 	void close();
 	
 	/**
+		equivalent to: i2c_smbus_read_byte_data
 		Reads one byte from I2C register at "command". The result gets
 		stored into "value".
 
 		Returns true on success, false on failure.
 	*/
-	bool i2c_smbus_read_byte_data(__u8 command, __u8& value) const;
+	bool read_byte(__u8 command, __u8& value) const;
 
 	/**
+		equivalent to: i2c_smbus_write_byte_data
 		Writes the byte "value" to I2C register at "command".
 
 		Returns true on success, false on failure.
 	*/
-	bool i2c_smbus_write_byte_data(__u8 command, __u8 value) const;
+	bool write_byte(__u8 command, __u8 value) const;
 
 	/**
+		equivalent to: i2c_smbus_read_word_data
 		Reads one word from I2C register at "command". The result gets
 		stored into "value".
 
 		Returns true on success, false on failure.
 	*/
-	bool i2c_smbus_read_word_data(__u8 command, __u16& value) const;
+	bool read_word(__u8 command, __u16& value) const;
 
 	/**
+		equivalent to: i2c_smbus_write_word_data
 		Writes the word "value" to I2C register at "command".
 
 		Returns true on success, false on failure.
 	*/
-	bool i2c_smbus_write_word_data(__u8 command, __u16 value) const;
+	bool write_word(__u8 command, __u16 value) const;
 
 	/**
+		equivalent to: i2c_smbus_read_block_data
 		Reads the block register "command" and writes the data to the
 		values array. The length of the data is returned in bytes.
 
@@ -59,16 +64,17 @@ public:
 
 		Returns -1 on failure.
 	*/
-	__s32 i2c_smbus_read_block_data(__u8 command, __u8* values) const;
+	__s32 read_block(__u8 command, __u8* values) const;
 
 	/**
+		equivalent to: i2c_smbus_write_block_data
 		Writes "length" bytes stored in "values" to the register
 		"command". In case length is bigger than 32, only 32 bytes
 		are transferred.
 
 		Returns true on success, false on failure.
 	*/
-	bool i2c_smbus_write_block_data(__u8 command, __u8 length, __u8* values) const;
+	bool write_block(__u8 command, __u8 length, __u8* values) const;
 
 private:
     int fd;

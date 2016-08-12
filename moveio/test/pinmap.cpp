@@ -2,8 +2,8 @@
 #include <string>
 #include <fstream>
 
-#include "moveio/GPIOPin.h"
-#include "moveio/PinMapper.h"
+#include <moveio/GPIOPin.h>
+#include <moveio/PinMapper.h>
 
 using namespace std;
 

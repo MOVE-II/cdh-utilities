@@ -69,7 +69,7 @@ void I2CDevice::close()
 // 	return true;
 // }
 
-bool I2CDevice::i2c_smbus_read_byte_data(__u8 command, __u8& value) const
+bool I2CDevice::read_byte(__u8 command, __u8& value) const
 {
 	if (!this->isOK())
 	{
@@ -86,7 +86,7 @@ bool I2CDevice::i2c_smbus_read_byte_data(__u8 command, __u8& value) const
 	return true;
 }
 
-bool I2CDevice::i2c_smbus_write_byte_data(__u8 command, __u8 value) const
+bool I2CDevice::write_byte(__u8 command, __u8 value) const
 {
 	if (!this->isOK())
 	{
@@ -102,7 +102,7 @@ bool I2CDevice::i2c_smbus_write_byte_data(__u8 command, __u8 value) const
 	return true;
 }
 
-bool I2CDevice::i2c_smbus_read_word_data(__u8 command, __u16& value) const
+bool I2CDevice::read_word(__u8 command, __u16& value) const
 {
 	if (!this->isOK())
 	{
@@ -119,7 +119,7 @@ bool I2CDevice::i2c_smbus_read_word_data(__u8 command, __u16& value) const
 	return true;
 }
 
-bool I2CDevice::i2c_smbus_write_word_data(__u8 command, __u16 value) const
+bool I2CDevice::write_word(__u8 command, __u16 value) const
 {
 	if (!this->isOK())
 	{
@@ -135,7 +135,7 @@ bool I2CDevice::i2c_smbus_write_word_data(__u8 command, __u16 value) const
 	return true;
 }
 
-__s32 I2CDevice::i2c_smbus_read_block_data(__u8 command, __u8* values) const
+__s32 I2CDevice::read_block(__u8 command, __u8* values) const
 {
 	if (!this->isOK() || values == nullptr)
 	{
@@ -147,7 +147,7 @@ __s32 I2CDevice::i2c_smbus_read_block_data(__u8 command, __u8* values) const
 	return ret;
 }
 
-bool I2CDevice::i2c_smbus_write_block_data(__u8 command, __u8 length, __u8* values) const
+bool I2CDevice::write_block(__u8 command, __u8 length, __u8* values) const
 {
 	if (!this->isOK() || values == nullptr || length > 32)
 	{

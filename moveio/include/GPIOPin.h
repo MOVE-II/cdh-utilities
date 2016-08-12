@@ -28,6 +28,15 @@ public:
 		DIRECTION_FAILED // reading direction failed
 	};
 	
+	enum EDGE_TRIGGER
+	{
+		TRIGGER_NONE,
+		TRIGGER_RISING,
+		TRIGGER_FALLING,
+		TRIGGER_BOTH,
+		TRIGGER_FAILED
+	};
+	
 	/**
 		Creates a new GPIOPin instance and tries to open the specified gpio pin.
 	*/
@@ -37,7 +46,12 @@ public:
 	/**
 		Returns true when this gpio pin is ok (= pin is open and can be modified).
 	*/
-	bool isOK();
+	bool isOK() const;
+	
+	/**
+		Closes the this gpio pin. After that it isn't ok anymore and can't be used for further accesses.
+	*/
+	void close();
 	
 	/**
 		Sets the direction of the pin to the supplied state, when this gpio pin is ok.
@@ -62,13 +76,37 @@ public:
 	
 	/**
 		Sets the current value at the pin. Only changes the value at the pin, when this gpio pin is ok.
+		
+		Returns true on success
 	*/
-	void setPin(bool value);
+	bool setPin(bool value);
+	
+	/**
+		Set edge trigger.
+		
+		Returns true on success.
+	*/
+	bool setEdgeTrigger(GPIOPin::EDGE_TRIGGER trigger);
+	
+	/**
+		Returns current edge trigger state
+	*/
+	GPIOPin::EDGE_TRIGGER getEdgeTrigger();
+	
+	/**
+		Waits for edge trigger.
+		This method returns when the edge trigger fires, or when 10 seconds have passed.
+		
+		Returns false, when the file descriptor is not open.
+	*/
+	bool waitForEdge();
 
 	const std::string& getPinPath();
 private:
 	std::string pinPath;
-    std::unique_ptr<std::fstream> fileHandle;
+	
+    //std::unique_ptr<std::fstream> fileHandle;
+	int fd;
 };
 
 
