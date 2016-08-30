@@ -14,8 +14,7 @@
 
 using namespace std;
 
-SPIDevice::SPIDevice(const std::string& devicePath, SPIMODE mode) :
-	mode(mode)
+SPIDevice::SPIDevice(const std::string& devicePath, SPIMODE mode)
 {
 	std::string realpath = SPIDevice::getSpiDevicePath(devicePath);
 	this->fd = open(realpath.data(), O_RDWR);
@@ -23,8 +22,8 @@ SPIDevice::SPIDevice(const std::string& devicePath, SPIMODE mode) :
 	this->custom_cs = SPIDevice::getCustomCS(devicePath);
 	
 	this->speed_hz = this->getMaxSpeed();
-	this->delay_usecs = 0;
-	this->bits_per_word = 8;
+	
+	this->setMode(mode);
 }
 
 SPIDevice::~SPIDevice()
@@ -118,6 +117,27 @@ int SPIDevice::getMaxSpeed() const
 	return 100000; // 100 khz
 }
 
+bool SPIDevice::setMode(SPIDevice::SPIMODE mode)
+{
+	this->mode = mode;
+	
+	if (this->isOK())
+	{
+		int mode_num = (int) mode;
+		
+		return ioctl(this->fd, SPI_IOC_WR_MODE32, &mode_num) == 0;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+SPIDevice::SPIMODE SPIDevice::getMode() const
+{
+	return this->mode;
+}
+
 int SPIDevice::getSpeed() const
 {
 	return this->speed_hz;
@@ -143,12 +163,12 @@ bool SPIDevice::transfer(void* rx, const void* tx, int size) const
 		}
 		
 		struct spi_ioc_transfer tr;
+		memset(&tr, 0, sizeof(tr));
+		
 		tr.tx_buf = reinterpret_cast<__u64>(tx);
 		tr.rx_buf = reinterpret_cast<__u64>(rx);
 		tr.len = size;
-		tr.delay_usecs = this->delay_usecs;
 		tr.speed_hz = this->speed_hz;
-		tr.bits_per_word = this->bits_per_word;
 		
 		int ret = ioctl(fd, SPI_IOC_MESSAGE(1), &tr);
 		

@@ -56,6 +56,9 @@ public:
 	*/
 	void setSpeed(int speed_hz);
 	
+	bool setMode(SPIMODE mode);
+	SPIMODE getMode() const;
+	
 	/**
 		Returns true when this SPIDevice is open and can be used to transfer data.
 	*/
@@ -110,8 +113,6 @@ private:
     int fd;
 	
 	int speed_hz;
-	int delay_usecs;
-	int bits_per_word;
 	SPIMODE mode;
 	
 	std::unique_ptr<GPIOPin> custom_cs;
