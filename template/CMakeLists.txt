@@ -9,8 +9,9 @@ add_executable(myprogram
 )
 
 # Include needed libraries here, one target_link_libraries per library
-# target_link_libraries(myprogram sampleLibrary)
-target_link_libraries(myprogram moveio)
+find_package(moveio REQUIRED)
+include_directories(${MOVEIO_INCLUDE_DIRS})
+target_link_libraries(myprogram ${MOVEIO_LIBRARY})
 
 # All h-files go into the include folder, only need the folder name here
 target_include_directories(myprogram PUBLIC include/)
