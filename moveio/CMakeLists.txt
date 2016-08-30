@@ -4,9 +4,20 @@ project(moveio)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall")
 
-add_library(moveio src/GPIOPin.cpp src/SPIDevice.cpp src/PinMapper.cpp src/I2CDevice.cpp)
+set(MOVEIO_SOURCES
+	src/GPIOPin.cpp
+	src/SPIDevice.cpp
+	src/PinMapper.cpp
+	src/I2CDevice.cpp
+)
+
+add_library(moveio SHARED ${MOVEIO_SOURCES})
 target_include_directories (moveio PUBLIC include/)
 
 # install targets
-install(TARGETS moveio ARCHIVE DESTINATION lib)
-install(DIRECTORY include/ DESTINATION include/moveio)
+set(MOVEIO_NAME moveio)
+
+install(TARGETS moveio LIBRARY DESTINATION lib/${MOVEIO_NAME})
+install(DIRECTORY include/ DESTINATION include/${MOVEIO_NAME}/moveio)
+install(FILES moveio-config.cmake DESTINATION lib/${MOVEIO_NAME})
+
