@@ -135,14 +135,14 @@ bool I2CDevice::write_word(__u8 command, __u16 value) const
 	return true;
 }
 
-__s32 I2CDevice::read_block(__u8 command, __u8* values) const
+__s32 I2CDevice::read_block(__u8 command, __u8 length, __u8* values) const
 {
 	if (!this->isOK() || values == nullptr)
 	{
 		return -1;
 	}
 
-	__s32 ret = ::i2c_smbus_read_block_data(this->fd, command, values);
+	__s32 ret = ::i2c_smbus_read_i2c_block_data(this->fd, command, length, values);
 	
 	return ret;
 }
@@ -154,7 +154,7 @@ bool I2CDevice::write_block(__u8 command, __u8 length, __u8* values) const
 		return false;
 	}
 
-	__s32 ret = ::i2c_smbus_write_block_data(this->fd, command, length, values);
+	__s32 ret = ::i2c_smbus_write_i2c_block_data(this->fd, command, length, values);
 	if (ret < 0)
 	{
 		return false;

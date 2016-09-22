@@ -64,7 +64,7 @@ public:
 
 		Returns -1 on failure.
 	*/
-	__s32 read_block(__u8 command, __u8* values) const;
+	__s32 read_block(__u8 command, __u8 length, __u8* values) const;
 
 	/**
 		equivalent to: i2c_smbus_write_block_data
