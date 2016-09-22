@@ -63,6 +63,8 @@ public:
 		the register. To be safe, it's size should be 32 bytes.
 
 		Returns -1 on failure.
+
+		ERROR: crashes I2C driver on BeagleBone Black (other systems not tested).
 	*/
 	__s32 read_block(__u8 command, __u8 length, __u8* values) const;
 
@@ -73,6 +75,8 @@ public:
 		are transferred.
 
 		Returns true on success, false on failure.
+
+		ERROR: crashes I2C driver on BeagleBone Black (other systems not tested).
 	*/
 	bool write_block(__u8 command, __u8 length, __u8* values) const;
 
