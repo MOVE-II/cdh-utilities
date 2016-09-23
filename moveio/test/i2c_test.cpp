@@ -47,7 +47,7 @@ int main()
 	dev.write_word(0, mshort);
 	
 	__u8 block[32];
-	dev.read_block(0, block);
+	dev.read_block(0, 20, block);
 	dev.write_block(0, 20, block);
 	
 	return retv;
