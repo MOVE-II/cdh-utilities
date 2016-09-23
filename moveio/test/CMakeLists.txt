@@ -22,3 +22,4 @@ target_link_libraries(gpio_wait ${MOVEIO_LIBRARY})
 add_executable(i2c_test i2c_test.cpp)
 target_link_libraries(i2c_test ${MOVEIO_LIBRARY})
 
+install(TARGETS pinmap RUNTIME DESTINATION bin)
