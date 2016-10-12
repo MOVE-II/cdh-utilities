@@ -39,35 +39,35 @@ void I2CDevice::close()
 	}
 }
 
-// bool I2CDevice::write(const char* data, int size) const
-// {
-// 	if (!this->isOK())
-// 	{
-// 		return false;
-// 	}
-//
-// 	if (::write(this->fd, data, size) != size)
-// 	{
-// 		return false;
-// 	}
-//
-// 	return true;
-// }
+bool I2CDevice::write(const __u8* data, int size) const
+{
+ 	if (!this->isOK())
+ 	{
+ 		return false;
+ 	}
 
-// bool I2CDevice::read(char* data, int size) const
-// {
-// 	if (!this->isOK())
-// 	{
-// 		return false;
-// 	}
-//
-// 	if (::read(this->fd, data, size) != size)
-// 	{
-// 		return false;
-// 	}
-//
-// 	return true;
-// }
+ 	if (::write(this->fd, data, size) != size)
+ 	{
+ 		return false;
+ 	}
+
+ 	return true;
+}
+
+bool I2CDevice::read(__u8* data, int size) const
+{
+ 	if (!this->isOK())
+ 	{
+ 		return false;
+ 	}
+
+ 	if (::read(this->fd, data, size) != size)
+ 	{
+ 		return false;
+ 	}
+
+ 	return true;
+}
 
 bool I2CDevice::read_byte(__u8 command, __u8& value) const
 {

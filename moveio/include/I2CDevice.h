@@ -19,7 +19,21 @@ public:
 		the I2CDevice is not ok anymore and can't be used for further accesses.
 	*/
 	void close();
-	
+
+	/**
+		Writes bytes to the I2C bus in one transaction.
+
+		Returns true on success, false on failure.
+	*/
+	bool write(const __u8* data, int size) const;
+
+	/**
+		Reads bytes from the I2C bus in one transaction.
+
+		Returns true on success, false on failure.
+	*/
+	bool read(__u8* data, int size) const;
+
 	/**
 		equivalent to: i2c_smbus_read_byte_data
 		Reads one byte from I2C register at "command". The result gets
