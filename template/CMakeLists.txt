@@ -1,21 +1,19 @@
+cmake_minimum_required(VERSION 3.2)
 project(template)
 
-# Flags for the compiler
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall")
+# find needed libraries
+find_package(moveio REQUIRED)
+include_directories(${MOVEIO_INCLUDE_DIRS})
 
-# All cpp-files should get listed here
+# Flags for the compiler
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wall")
+
+# Add one/multiple programs
 add_executable(myprogram
 	src/hello.cpp
 )
-
-# Include needed libraries here, one target_link_libraries per library
-find_package(moveio REQUIRED)
-include_directories(${MOVEIO_INCLUDE_DIRS})
+target_include_directories(myprogram PUBLIC include/)
 target_link_libraries(myprogram ${MOVEIO_LIBRARY})
 
-# All h-files go into the include folder, only need the folder name here
-target_include_directories(myprogram PUBLIC include/)
-
-# Installs programs to: /usr/local/bin
 install(TARGETS myprogram
         RUNTIME DESTINATION bin)
